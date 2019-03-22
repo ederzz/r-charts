@@ -3,14 +3,14 @@ import Echarts from 'echarts'
 import { mockChartData } from '@/services'
 import styles from './index.less'
 
-export default class SiteMonitorBarChart extends React.PureComponent {
-    chartDom: HTMLDivElement
-    graph: Echarts
+import BaseEChart from '@/components/BaseEChart'
+
+export default class SiteMonitorBarChart extends React.PureComponent<any, any> {
+    state = {
+        chartOptions: {}
+    }
 
     componentDidMount() {
-        this.graph = Echarts.init(this.chartDom)
-        // 减少重复工作量
-
         mockChartData()
             .then(({
                 data: {
@@ -21,67 +21,70 @@ export default class SiteMonitorBarChart extends React.PureComponent {
                 const pvData = data.map(d => d.pv)
                 const uvData = data.map(d => d.uv)
 
-                this.graph.setOption({
-                    title: {
-                        text: '站点监控图'
-                    },
-                    xAxis: {
-                        data: dateData,
-                        type: 'category',
-                        axisLabel: {
-                            show: false
+                this.setState({
+                    chartOptions: {
+                        title: {
+                            text: '站点监控图'
                         },
-                        axisTick: {
-                            show: false
+                        xAxis: {
+                            data: dateData,
+                            type: 'category',
+                            axisLabel: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            axisLine: {
+                                show: false
+                            },
+                            z: 10
                         },
-                        axisLine: {
-                            show: false
-                        },
-                        z: 10
-                    },
-                    yAxis: {
-                        axisLine: {
-                            show: false
-                        },
-                        axisTick: {
-                            show: false
-                        },
-                        axisLabel: {
-                            textStyle: {
-                                color: '#999'
+                        yAxis: {
+                            axisLine: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: '#999'
+                                }
                             }
-                        }
-                    },
-                    dataZoom: [
-                        {
-                            type: 'inside'
-                        }
-                    ],
-                    series: [
-                        {
-                            type: 'bar',
-                            itemStyle: {
-                                normal: {
-                                    color: '#9cf8d1',
-                                }
-                            },
-                            barGap: '-100%',
-                            barCategoryGap:'0',
-                            data: pvData,
-                            animation: false
                         },
-                        {
-                            type: 'bar',
-                            itemStyle: {
-                                normal: {
-                                    color: '#725cfc',
-                                    
-                                }
+                        dataZoom: [
+                            {
+                                type: 'inside'
+                            }
+                        ],
+                        series: [
+                            {
+                                type: 'bar',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#9cf8d1',
+                                    }
+                                },
+                                barGap: '-100%',
+                                barCategoryGap: '0',
+                                data: pvData,
+                                animation: false
                             },
-                            barCategoryGap: '1', // 柱间距离
-                            data: uvData
-                        }
-                    ]
+                            {
+                                type: 'bar',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#725cfc',
+
+                                    }
+                                },
+                                barCategoryGap: '1', // 柱间距离
+                                data: uvData
+                            }
+                        ]
+
+                    }
                 })
             })
     }
@@ -90,10 +93,7 @@ export default class SiteMonitorBarChart extends React.PureComponent {
         return (
             <main>
                 <h1>site monitor bar chart</h1>
-                <div 
-                    className={styles['chart-wrapper']}
-                    ref={ele => { this.chartDom = ele }}
-                />
+                <BaseEChart {...this.state.chartOptions} />
             </main>
         )
     }
