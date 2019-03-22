@@ -13,7 +13,10 @@ function mockData() {
                     const day = now.getDate() < 10 ? '0' + now.getDate() : now.getDate()
                     return year + '-' + month + '-' + day
                 },
-                'value|40-100': 100
+                'uv|40-100': 100,
+                'pv': function () {
+                    return this.uv + Math.random() * 50 >> 0
+                }
             }
         ]
     })
